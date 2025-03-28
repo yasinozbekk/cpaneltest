@@ -1,0 +1,27 @@
+<?php
+$secret = "112313213213243515431534153"; // GitHub Webhook'ta belirlediğin Secret Key
+$signature = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
+$payload = file_get_contents("php://input");
+
+// Loglama için
+file_put_contents("webhook.log", "Webhook çağrıldı.\n", FILE_APPEND);
+
+if (!$signature) {
+    file_put_contents("webhook.log", "Hata: Signature yok.\n", FILE_APPEND);
+    http_response_code(403);
+    exit("Erişim reddedildi: Signature eksik.");
+}
+
+$hash = "sha256=" . hash_hmac("sha256", $payload, $secret);
+if (!hash_equals($hash, $signature)) {
+    file_put_contents("webhook.log", "Hata: Secret key doğrulanamadı.\n", FILE_APPEND);
+    http_response_code(403);
+    exit("Erişim reddedildi: Hatalı Secret Key.");
+}
+
+// Deploy işlemi
+exec("cd /home/bakcupcal/public_html && git pull origin main 2>&1", $output);
+file_put_contents("webhook.log", "Git pull çıktı:\n" . implode("\n", $output) . "\n", FILE_APPEND);
+
+echo "Deploy tamamlandı.";
+?>
