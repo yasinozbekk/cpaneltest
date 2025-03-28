@@ -1,0 +1,23 @@
+name: FTP Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v2
+
+      - name: FTP Deploy İşlemini Gerçekleştir
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp.bakcup.calisto.link
+          username: ysn@bakcup.calistodigital.com
+          password: X$n!]S0?vVQB    
+          remote-dir: public_html                     
+          local-dir: ./     
