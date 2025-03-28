@@ -1,4 +1,4 @@
-name: Deploy via FTP
+name: FTP Deploy
 
 on:
   push:
@@ -6,20 +6,18 @@ on:
       - main
 
 jobs:
-  deploy:
+  ftp-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
 
-      - name: FTP Deploy
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v2
+
+      - name: FTP Deploy İşlemini Gerçekleştir
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ftp.bakcup.calisto.link
-          username: ysn@bakcup.calistodigital.com
-          password: "X$n!]S0?vVQB"
-          protocol: sftp  # Eğer sunucu sadece SFTP destekliyorsa
-          port: 22  # SFTP için genellikle 22, FTP için 21 kullanılır
-          local-dir: ./
-          server-dir: public_html
-          log-level: verbose  # Detaylı log almak için
+          server: ftp.aries.calisto.link
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}    
+          remote-dir: public_html                     
+          local-dir: ./     
